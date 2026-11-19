@@ -27,65 +27,7 @@ function getApiKey(req) {
   return process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.trim() : null;
 }
 
-// Robust HTTPS POST using IPv4 with fast failover (fixes Windows IPv6 connect timeout)
-function httpsPost(urlStr, bodyObj, retries = 0) {
-  return new Promise((resolve, reject) => {
-    const attempt = (remaining) => {
-      const dataStr = JSON.stringify(bodyObj);
-      const parsed = new URL(urlStr);
-
-      const req = https.request({
-        protocol: parsed.protocol,
-        hostname: parsed.hostname,
-        port: parsed.port || 443,
-        path: parsed.pathname + parsed.search,
-        method: 'POST',
-        family: 4, // Force IPv4 to prevent Windows IPv6 connect timeouts
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': Buffer.byteLength(dataStr),
-          'Connection': 'close'
-        },
-        timeout: 9000 // Fast 9-second model timeout
-      }, (res) => {
-        let data = '';
-        res.on('data', chunk => data += chunk);
-        res.on('end', () => {
-          try {
-            const parsedData = JSON.parse(data);
-            resolve({ ok: res.statusCode >= 200 && res.statusCode < 300, status: res.statusCode, data: parsedData });
-          } catch (e) {
-            reject(new Error(`Failed to parse Gemini response: ${e.message}`));
-          }
-        });
-      });
-
-      req.on('timeout', () => {
-        req.destroy();
-        if (remaining > 0) {
-          setTimeout(() => attempt(remaining - 1), 300);
-        } else {
-          reject(new Error('Model request timed out after 9 seconds'));
-        }
-      });
-
-      req.on('error', (err) => {
-        if (remaining > 0 && (err.code === 'ECONNRESET' || err.code === 'ETIMEDOUT' || err.code === 'EPIPE')) {
-          setTimeout(() => attempt(remaining - 1), 300);
-        } else {
-          reject(err);
-        }
-      });
-
-      req.write(dataStr);
-      req.end();
-    };
-
-    attempt(retries);
-  });
-}
-
-// Direct Gemini API call with smart model fallback & IPv4 priority
+// Robust Gemini API call using native fetch with connection pooling & fast failover
 async function callGeminiApi({ apiKey, model, contents, systemInstruction, generationConfig }) {
   let requestedModel = model || process.env.DEFAULT_MODEL || 'gemini-3.1-flash-lite';
   // Map rate-limited, deprecated, or unavailable models to verified active models
@@ -99,83 +41,72 @@ async function callGeminiApi({ apiKey, model, contents, systemInstruction, gener
     'gemini-3-flash-preview'
   ].filter((m, i, arr) => arr.indexOf(m) === i); // deduplicate
 
+  const requestBody = {
+    contents,
+    generationConfig: {
+      temperature: generationConfig?.temperature ?? 0.7,
+      maxOutputTokens: generationConfig?.maxOutputTokens ?? 4096,
+      topP: generationConfig?.topP ?? 0.95,
+      responseMimeType: generationConfig?.responseMimeType || 'text/plain'
+    }
+  };
+
+  if (systemInstruction) {
+    requestBody.systemInstruction = {
+      parts: [{ text: systemInstruction }]
+    };
+  }
+
   let lastError = null;
 
   for (const currentModel of fallbackModels) {
-    try {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${currentModel}:generateContent?key=${apiKey}`;
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${currentModel}:generateContent?key=${apiKey}`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody),
+          signal: AbortSignal.timeout(20000)
+        });
 
-      const requestBody = {
-        contents,
-        generationConfig: {
-          temperature: generationConfig?.temperature ?? 0.7,
-          maxOutputTokens: generationConfig?.maxOutputTokens ?? 4096,
-          topP: generationConfig?.topP ?? 0.95,
-          responseMimeType: generationConfig?.responseMimeType || 'text/plain'
-        }
-      };
+        const data = await response.json();
 
-      if (systemInstruction) {
-        requestBody.systemInstruction = {
-          parts: [{ text: systemInstruction }]
-        };
-      }
+        if (!response.ok) {
+          const errMsg = data?.error?.message || `Gemini status ${response.status}`;
+          const err = new Error(errMsg);
+          err.status = response.status;
+          err.details = data;
 
-      const response = await httpsPost(url, requestBody);
-      const data = response.data;
+          if ((response.status === 503 || response.status === 429) && attempt < 2) {
+            console.warn(`Model ${currentModel} returned ${response.status}. Retrying in 1.2s...`);
+            await new Promise(r => setTimeout(r, 1200));
+            continue;
+          }
 
-      if (!response.ok) {
-        const errorMsg = data?.error?.message || `Gemini API returned status ${response.status}`;
-        const err = new Error(errorMsg);
-        err.status = response.status;
-        err.details = data;
-
-        // Fallback for 404 (deprecated), 429 (rate-limited/no quota), or 503 (busy)
-        if (response.status === 404 || response.status === 429 || response.status === 503) {
-          console.warn(`Model ${currentModel} returned ${response.status}. Attempting fallback model...`);
           lastError = err;
-          continue;
+          break; // Try next fallback model
         }
 
-        throw err;
+        const candidate = data.candidates?.[0];
+        const text = candidate?.content?.parts?.map(p => p.text).join('') || '';
+        if (text) {
+          return {
+            text,
+            finishReason: candidate?.finishReason,
+            usageMetadata: data.usageMetadata,
+            model: currentModel
+          };
+        }
+      } catch (err) {
+        lastError = err;
+        console.warn(`Attempt ${attempt} on ${currentModel} failed: ${err.message}`);
+        if (attempt < 2) {
+          await new Promise(r => setTimeout(r, 800));
+        }
       }
-
-      const candidate = data.candidates?.[0];
-      const text = candidate?.content?.parts?.map(p => p.text).join('') || '';
-      return {
-        text,
-        finishReason: candidate?.finishReason,
-        usageMetadata: data.usageMetadata,
-        model: currentModel
-      };
-    } catch (err) {
-      lastError = err;
-      console.warn(`Model ${currentModel} failed: ${err.message}. Trying next fallback...`);
     }
   }
-
-  // Rapid recovery retry on gemini-3.1-flash-lite
-  try {
-    await new Promise(r => setTimeout(r, 600));
-    const recUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${apiKey}`;
-    const recBody = {
-      contents,
-      generationConfig: {
-        temperature: generationConfig?.temperature ?? 0.7,
-        maxOutputTokens: 2048
-      }
-    };
-    if (systemInstruction) {
-      recBody.systemInstruction = { parts: [{ text: systemInstruction }] };
-    }
-    const recRes = await httpsPost(recUrl, recBody);
-    if (recRes.ok && recRes.data.candidates?.[0]) {
-      return {
-        text: recRes.data.candidates[0].content.parts.map(p => p.text).join(''),
-        model: 'gemini-3.1-flash-lite'
-      };
-    }
-  } catch (e) {}
 
   throw lastError || new Error('All model requests failed. Please try again.');
 }

@@ -88,7 +88,7 @@ const API = {
         temperature: options.temperature ?? 0.4,
         systemInstruction: options.systemInstruction || localStorage.getItem('lifegenie_system_prompt') || ''
       })
-    }, 30000);
+    }, 45000);
 
     const data = await res.json();
     if (!res.ok) {
@@ -106,7 +106,7 @@ const API = {
         ...payload,
         model
       })
-    }, 30000);
+    }, 45000);
     const data = await res.json();
     if (!res.ok) {
       throw new Error(data.message || `Study Genie request failed (${res.status})`);
@@ -123,7 +123,7 @@ const API = {
         ...payload,
         model
       })
-    }, 30000);
+    }, 45000);
     const data = await res.json();
     if (!res.ok) {
       throw new Error(data.message || `Idea Generator request failed (${res.status})`);
@@ -140,7 +140,7 @@ const API = {
         ...payload,
         model
       })
-    }, 30000);
+    }, 45000);
     const data = await res.json();
     if (!res.ok) {
       throw new Error(data.message || `Writing Assistant request failed (${res.status})`);
@@ -157,7 +157,7 @@ const API = {
         ...payload,
         model
       })
-    }, 30000);
+    }, 45000);
     const data = await res.json();
     if (!res.ok) {
       throw new Error(data.message || `Goal breakdown request failed (${res.status})`);
