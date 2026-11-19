@@ -27,8 +27,8 @@ function getApiKey(req) {
   return process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.trim() : null;
 }
 
-// Robust HTTPS POST using IPv4 with retry (fixes Windows IPv6 connect timeout)
-function httpsPost(urlStr, bodyObj, retries = 1) {
+// Robust HTTPS POST using IPv4 with fast failover (fixes Windows IPv6 connect timeout)
+function httpsPost(urlStr, bodyObj, retries = 0) {
   return new Promise((resolve, reject) => {
     const attempt = (remaining) => {
       const dataStr = JSON.stringify(bodyObj);
@@ -46,7 +46,7 @@ function httpsPost(urlStr, bodyObj, retries = 1) {
           'Content-Length': Buffer.byteLength(dataStr),
           'Connection': 'close'
         },
-        timeout: 15000
+        timeout: 9000 // Fast 9-second model timeout
       }, (res) => {
         let data = '';
         res.on('data', chunk => data += chunk);
@@ -65,7 +65,7 @@ function httpsPost(urlStr, bodyObj, retries = 1) {
         if (remaining > 0) {
           setTimeout(() => attempt(remaining - 1), 300);
         } else {
-          reject(new Error('Gemini API request timed out after 15 seconds'));
+          reject(new Error('Model request timed out after 9 seconds'));
         }
       });
 
@@ -87,17 +87,17 @@ function httpsPost(urlStr, bodyObj, retries = 1) {
 
 // Direct Gemini API call with smart model fallback & IPv4 priority
 async function callGeminiApi({ apiKey, model, contents, systemInstruction, generationConfig }) {
-  let requestedModel = model || process.env.DEFAULT_MODEL || 'gemini-3.5-flash-lite';
-  // Map rate-limited/deprecated models to active quota models immediately
-  if (requestedModel.includes('2.5') || requestedModel.includes('1.5') || requestedModel.includes('3.8') || requestedModel.includes('pro')) {
-    requestedModel = 'gemini-3.5-flash-lite';
+  let requestedModel = model || process.env.DEFAULT_MODEL || 'gemini-3-flash-preview';
+  // Map rate-limited or deprecated models to verified active models
+  if (requestedModel.includes('2.5') || requestedModel.includes('1.5') || requestedModel.includes('3.5')) {
+    requestedModel = 'gemini-3-flash-preview';
   }
 
   const fallbackModels = [
     requestedModel,
-    'gemini-3.5-flash-lite',
+    'gemini-3-flash-preview',
     'gemini-3.1-flash-lite',
-    'gemini-flash-latest'
+    'gemini-3.8-flash'
   ].filter((m, i, arr) => arr.indexOf(m) === i); // deduplicate
 
   let lastError = null;
@@ -401,12 +401,11 @@ app.get('/api/status', (req) => {
   const apiKey = getApiKey(req);
   req.res.json({
     configured: Boolean(apiKey && apiKey !== 'your_gemini_api_key_here'),
-    model: process.env.DEFAULT_MODEL || 'gemini-3.8-flash',
+    model: process.env.DEFAULT_MODEL || 'gemini-3-flash-preview',
     supportedModels: [
-      { id: 'gemini-3.8-flash', name: 'Gemini 3.8 Flash (Latest & Recommended)' },
-      { id: 'gemini-3.5-flash-lite', name: 'Gemini 3.5 Flash Lite (Ultra Fast)' },
+      { id: 'gemini-3-flash-preview', name: 'Gemini 3 Flash (Fast & Active)' },
       { id: 'gemini-3.1-flash-lite', name: 'Gemini 3.1 Flash Lite (High Reliability)' },
-      { id: 'gemini-pro-latest', name: 'Gemini Pro Latest (Deep Reasoning)' }
+      { id: 'gemini-3.8-flash', name: 'Gemini 3.8 Flash (Latest)' }
     ],
     timestamp: new Date().toISOString()
   });

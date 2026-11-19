@@ -4,7 +4,7 @@
  */
 
 // Helper with abort timeout to ensure UI never freezes on loading
-async function fetchWithTimeout(resource, options = {}, timeout = 25000) {
+async function fetchWithTimeout(resource, options = {}, timeout = 40000) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
   try {
@@ -40,8 +40,8 @@ const API = {
     const dockModel = document.getElementById('dock-model-select');
     if (dockModel && dockModel.value) return dockModel.value;
     const stored = localStorage.getItem('lifegenie_model');
-    if (stored && !stored.includes('2.5') && !stored.includes('1.5')) return stored;
-    return 'gemini-3.5-flash-lite';
+    if (stored && !stored.includes('2.5') && !stored.includes('1.5') && !stored.includes('3.5')) return stored;
+    return 'gemini-3-flash-preview';
   },
 
   getHeaders() {
