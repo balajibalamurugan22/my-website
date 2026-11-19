@@ -79,8 +79,8 @@ class SettingsController {
     const dockModel = document.getElementById('dock-model-select');
     if (dockModel) {
       let saved = localStorage.getItem('lifegenie_model');
-      if (!saved || saved !== 'gemini-3.1-flash-lite') {
-        saved = 'gemini-3.5-flash-lite';
+      if (!saved || saved.includes('2.5') || saved.includes('1.5') || saved.includes('3.5') || saved.includes('3.8')) {
+        saved = 'gemini-3.1-flash-lite';
         localStorage.setItem('lifegenie_model', saved);
       }
       dockModel.value = saved;
@@ -99,8 +99,8 @@ class SettingsController {
 
     if (this.modelSelect) {
       let saved = localStorage.getItem('lifegenie_model');
-      if (!saved || saved.includes('2.5') || saved.includes('1.5')) {
-        saved = 'gemini-3.5-flash-lite';
+      if (!saved || saved.includes('2.5') || saved.includes('1.5') || saved.includes('3.5') || saved.includes('3.8')) {
+        saved = 'gemini-3.1-flash-lite';
       }
       this.modelSelect.value = saved;
     }
@@ -186,7 +186,7 @@ class SettingsController {
 
   saveSettings() {
     const key = this.keyInput ? this.keyInput.value.trim() : '';
-    const model = this.modelSelect ? this.modelSelect.value : 'gemini-2.5-flash';
+    const model = this.modelSelect ? this.modelSelect.value : 'gemini-3.1-flash-lite';
     const temp = this.tempInput ? this.tempInput.value : '0.7';
     const sys = this.systemPromptInput ? this.systemPromptInput.value.trim() : '';
     const sfx = this.sfxToggle ? this.sfxToggle.checked : true;

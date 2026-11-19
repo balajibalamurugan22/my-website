@@ -55,8 +55,8 @@ class LifeGenieApp {
 
     // 10. Update model badge & migrate legacy or rate-limited models
     let model = localStorage.getItem('lifegenie_model');
-    if (!model || model !== 'gemini-3.1-flash-lite') {
-      model = 'gemini-3.5-flash-lite';
+    if (!model || model.includes('2.5') || model.includes('1.5') || model.includes('3.5') || model.includes('3.8')) {
+      model = 'gemini-3.1-flash-lite';
       localStorage.setItem('lifegenie_model', model);
     }
     const dockModel = document.getElementById('dock-model-select');
@@ -302,7 +302,7 @@ class LifeGenieApp {
   updateModelBadge(modelId) {
     const badges = document.querySelectorAll('.model-badge-text');
     badges.forEach(b => {
-      b.innerText = modelId || 'gemini-2.5-flash';
+      b.innerText = modelId || 'gemini-3.1-flash-lite';
     });
   }
 

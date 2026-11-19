@@ -87,17 +87,16 @@ function httpsPost(urlStr, bodyObj, retries = 0) {
 
 // Direct Gemini API call with smart model fallback & IPv4 priority
 async function callGeminiApi({ apiKey, model, contents, systemInstruction, generationConfig }) {
-  let requestedModel = model || process.env.DEFAULT_MODEL || 'gemini-3-flash-preview';
-  // Map rate-limited or deprecated models to verified active models
-  if (requestedModel.includes('2.5') || requestedModel.includes('1.5') || requestedModel.includes('3.5')) {
-    requestedModel = 'gemini-3-flash-preview';
+  let requestedModel = model || process.env.DEFAULT_MODEL || 'gemini-3.1-flash-lite';
+  // Map rate-limited, deprecated, or unavailable models to verified active models
+  if (!requestedModel || requestedModel.includes('2.5') || requestedModel.includes('1.5') || requestedModel.includes('3.5') || requestedModel.includes('3.8') || requestedModel.includes('pro')) {
+    requestedModel = 'gemini-3.1-flash-lite';
   }
 
   const fallbackModels = [
     requestedModel,
-    'gemini-3-flash-preview',
     'gemini-3.1-flash-lite',
-    'gemini-3.8-flash'
+    'gemini-3-flash-preview'
   ].filter((m, i, arr) => arr.indexOf(m) === i); // deduplicate
 
   let lastError = null;
@@ -155,7 +154,30 @@ async function callGeminiApi({ apiKey, model, contents, systemInstruction, gener
     }
   }
 
-  throw lastError || new Error('All model requests failed.');
+  // Rapid recovery retry on gemini-3.1-flash-lite
+  try {
+    await new Promise(r => setTimeout(r, 600));
+    const recUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${apiKey}`;
+    const recBody = {
+      contents,
+      generationConfig: {
+        temperature: generationConfig?.temperature ?? 0.7,
+        maxOutputTokens: 2048
+      }
+    };
+    if (systemInstruction) {
+      recBody.systemInstruction = { parts: [{ text: systemInstruction }] };
+    }
+    const recRes = await httpsPost(recUrl, recBody);
+    if (recRes.ok && recRes.data.candidates?.[0]) {
+      return {
+        text: recRes.data.candidates[0].content.parts.map(p => p.text).join(''),
+        model: 'gemini-3.1-flash-lite'
+      };
+    }
+  } catch (e) {}
+
+  throw lastError || new Error('All model requests failed. Please try again.');
 }
 
 // ============================================================================
@@ -487,7 +509,7 @@ Core Directives:
 
     const result = await callGeminiApi({
       apiKey,
-      model: model || process.env.DEFAULT_MODEL || 'gemini-3.5-flash-lite',
+      model: model || process.env.DEFAULT_MODEL || 'gemini-3.1-flash-lite',
       contents,
       systemInstruction: systemInstruction || defaultSystem,
       generationConfig: {

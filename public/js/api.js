@@ -40,8 +40,8 @@ const API = {
     const dockModel = document.getElementById('dock-model-select');
     if (dockModel && dockModel.value) return dockModel.value;
     const stored = localStorage.getItem('lifegenie_model');
-    if (stored && !stored.includes('2.5') && !stored.includes('1.5') && !stored.includes('3.5')) return stored;
-    return 'gemini-3-flash-preview';
+    if (stored && (stored === 'gemini-3.1-flash-lite' || stored === 'gemini-3-flash-preview')) return stored;
+    return 'gemini-3.1-flash-lite';
   },
 
   getHeaders() {
