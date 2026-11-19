@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>LIFEGENIE – Your Life, Your AI!</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f0ff'><polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/></svg>">
+
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Marked.js for Markdown & Highlight.js for Syntax Highlighting -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Authentication Guard -->
+  <script src="js/auth.js"></script>
+  <script>
+    LIFEGENIE_AUTH.requireAuth();
+  </script>
+</head>
+<body>
+
+  <!-- Ambient Cyber Aura & Grid Background -->
+  <div class="cyber-background">
+    <div class="cyber-grid"></div>
+    <div class="cyber-aura-1"></div>
+    <div class="cyber-aura-2"></div>
+  </div>
+
+  <div class="app-container">
+
+    <!-- ======================================================================
+         SIDEBAR NAVIGATION
+         ====================================================================== -->
+    <aside class="sidebar" id="app-sidebar">
+      
+      <!-- Brand Logo -->
+      <div class="sidebar-header">
+        <div class="brand" id="brand-link">
+          <div class="brand-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1>LIFEGENIE</h1>
+            <span>Your Life, Your AI!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- New Conversation Action -->
+      <div class="sidebar-action-wrap">
+        <button class="btn-new-chat" id="btn-new-chat">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          New Conversation
+        </button>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">AI Modules</div>
+        <ul class="nav-list">
+          <li>
+            <a href="#assistant" class="nav-item active" data-view="assistant">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              <span>AI Assistant</span>
+            </a>
+          </li>
+          <li>
+            <a href="#study" class="nav-item" data-view="study">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+              </svg>
+              <span>Study Genie</span>
+            </a>
+          </li>
+          <li>
+            <a href="#ideas" class="nav-item" data-view="ideas">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 18h6"></path>
+                <path d="M10 22h4"></path>
+                <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path>
+              </svg>
+              <span>Idea Generator</span>
+            </a>
+          </li>
+          <li>
+            <a href="#writing" class="nav-item" data-view="writing">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                <path d="M2 2l7.586 7.586"></path>
+                <circle cx="11" cy="11" r="2"></circle>
+              </svg>
+              <span>Writing Assistant</span>
+            </a>
+          </li>
+          <li>
+            <a href="#goals" class="nav-item" data-view="goals">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="6"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+              </svg>
+              <span>Goal Planner</span>
+            </a>
+          </li>
+          <li>
+            <a href="#settings" class="nav-item" data-view="settings">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Chat History -->
+        <div class="history-section">
+          <div class="history-header">
+            <span class="nav-section-title" style="padding:0;">Saved Chats</span>
+            <button class="btn-clear-history" id="btn-clear-all-history" title="Clear all history">Clear All</button>
+          </div>
+          <ul class="history-list" id="sidebar-history-list">
+            <!-- Populated dynamically by chat.js -->
+          </ul>
+        </div>
+      </nav>
+
+      <!-- Sidebar Status & Footer -->
+      <div class="sidebar-footer">
+        <div class="user-sidebar-card" id="sidebar-user-card">
+          <div class="user-sidebar-info">
+            <div class="user-avatar-dot" id="sidebar-user-avatar">EX</div>
+            <div class="user-details">
+              <span class="user-sidebar-name" id="sidebar-user-name">Explorer</span>
+              <span class="user-sidebar-email" id="sidebar-user-email">explorer@lifegenie.ai</span>
+            </div>
+          </div>
+          <button class="btn-icon btn-sidebar-logout" id="btn-sidebar-logout" title="Sign Out">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div class="ai-status-indicator">
+          <div class="status-left">
+            <div class="status-pulse-dot" id="status-pulse-dot"></div>
+            <span id="status-text">Checking Core...</span>
+          </div>
+          <span class="model-badge model-badge-text">gemini-3.5-flash-lite</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <!-- ======================================================================
+         MAIN CONTENT AREA
+         ====================================================================== -->
+    <main class="main-content">
+      
+      <!-- Top App Header -->
+      <header class="app-header">
+        <div class="header-left">
+          <button class="btn-mobile-menu" id="btn-mobile-toggle" aria-label="Toggle Navigation">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="view-heading">
+            <h2>
+              <span id="header-view-title">AI Assistant</span>
+              <span class="view-pill" id="header-view-pill">Neural Core</span>
+            </h2>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- API Key Setup Alert (visible when key is needed) -->
+          <button class="btn-key-alert" id="btn-key-alert" title="Click to configure Gemini API Key">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            Connect API Key
+          </button>
+
+          <!-- Sci-Fi Audio FX Toggle -->
+          <button class="btn-icon" id="btn-header-sfx" title="Toggle Sci-Fi Interface SFX">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+          </button>
+
+          <!-- Theme Toggle Button -->
+          <button class="btn-icon" id="btn-header-theme" title="Toggle Theme (Cyber Dark / Polar Light)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+
+          <!-- Settings Button -->
+          <button class="btn-icon btn-open-settings" title="System Settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </button>
+
+          <!-- User Profile & Sign Out Button -->
+          <div class="user-header-wrap">
+            <div class="user-profile-badge" id="btn-user-profile-header" title="Signed in user">
+              <div class="user-avatar-dot" id="header-user-avatar">EX</div>
+              <span class="user-name-text" id="header-user-name">Explorer</span>
+            </div>
+            <button class="btn-icon btn-header-logout" id="btn-header-logout" title="Sign Out">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- ====================================================================
+           VIEWS CONTAINER
+           ==================================================================== -->
+      <div class="views-container">
+
+        <!-- ------------------------------------------------------------------
+             VIEW 1: AI ASSISTANT & DASHBOARD
+             ------------------------------------------------------------------ -->
+        <section class="view-pane active" id="view-assistant">
+          <div class="chat-view-container">
+
+            <!-- Hero Welcome Screen (visible when chat has no messages) -->
+            <div class="hero-welcome" id="hero-welcome">
+              <div class="hero-welcome-inner">
+                <div class="hero-core-wrapper">
+                  <canvas id="ai-core-canvas"></canvas>
+                </div>
+                <h1 id="hero-greeting-text">Hello, Explorer!</h1>
+                <p>Welcome to <strong>LIFEGENIE</strong> — your intelligent, futuristic copilot powered by Google Gemini. Ask questions, solve academic problems, architect ideas, or plan your goals.</p>
+              </div>
+            </div>
+
+            <!-- Active Messages Stream Container -->
+            <div class="chat-messages-container" id="chat-messages" style="display:none;">
+              <!-- Message bubbles dynamically injected by chat.js -->
+            </div>
+
+            <!-- Chat Input Dock -->
+            <div class="chat-dock-wrapper">
+              <div class="chat-dock">
+                <div class="dock-input-row">
+                  <textarea 
+                    id="chat-input" 
+                    class="chat-textarea" 
+                    placeholder="Ask LIFEGENIE anything..." 
+                    rows="1"
+                  ></textarea>
+                  <!-- Voice Input Microphone Button -->
+                  <button class="btn-voice-chat" id="btn-voice-input" title="Voice Input (Click to speak)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                      <line x1="12" y1="19" x2="12" y2="23"></line>
+                      <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                  </button>
+                  <button class="btn-send-chat" id="btn-send" title="Transmit message">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <line x1="22" y1="2" x2="11" y2="13"></line>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="dock-bottom-bar">
+                  <div class="dock-meta-left">
+                    <span>Model:</span>
+                    <select class="dock-model-select" id="dock-model-select">
+                      <option value="gemini-3.5-flash-lite" selected>Gemini 3.5 Flash Lite (Fastest & Active)</option>
+                      <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite (High Reliability)</option>
+                    </select>
+                    <button class="btn-dock-voice-toggle" id="btn-dock-auto-speak" title="Toggle Fast AI Voice Replay">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                      <span id="auto-speak-status-text">Voice: OFF</span>
+                    </button>
+                  </div>
+                  <div>
+                    <button class="btn-clear-history" id="btn-clear-chat" title="Clear current conversation">Clear Chat</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ------------------------------------------------------------------
+             VIEW 2: STUDY GENIE
+             ------------------------------------------------------------------ -->
+        <section class="view-pane" id="view-study">
+          <div class="feature-view-container">
+            <div class="feature-header-card">
+              <div class="feature-header-info">
+                <h2>Study Genie</h2>
+                <p>Master academic concepts, generate interactive quizzes, and build optimized study timetables.</p>
+              </div>
+              <span style="font-size:2.4rem;">📚</span>
+            </div>
+
+            <!-- Study Sub-Tabs -->
+            <div class="tabs-bar">
+              <button class="tab-btn study-tab-btn active" data-tab="concept">💡 Concept Explainer</button>
+              <button class="tab-btn study-tab-btn" data-tab="quiz">🎯 Interactive Quiz Master</button>
+              <button class="tab-btn study-tab-btn" data-tab="timetable">📅 Timetable Builder</button>
+              <button class="tab-btn study-tab-btn" data-tab="simple">🎈 ELI5 Simple Explainer</button>
+            </div>
+
+            <!-- Panel A: Concept Explainer -->
+            <div class="study-tab-panel" id="study-panel-concept">
+              <div class="glass-panel">
+                <form id="study-concept-form">
+                  <div class="form-grid-2">
+                    <div class="form-group">
+                      <label>Academic Concept / Topic</label>
+                      <input type="text" id="concept-topic" class="form-control" placeholder="e.g. Photosynthesis, General Relativity, Binary Search" required>
+                    </div>
+                    <div class="form-group">
+                      <label>Subject / Domain</label>
+                      <input type="text" id="concept-subject" class="form-control" placeholder="e.g. Physics, Biology, Computer Science">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Target Academic Level</label>
+                    <select id="concept-level" class="form-control">
+                      <option value="High School">High School</option>
+                      <option value="Undergraduate College">Undergraduate College</option>
+                      <option value="Graduate / Advanced">Graduate / Advanced</option>
+                      <option value="Middle School">Middle School</option>
+                    </select>
+                  </div>
+                  <button type="submit" class="btn-action-primary" id="btn-concept-submit">
+                    <span>Generate Concept Breakdown</span>
+                  </button>
+                </form>
+              </div>
+              <div id="concept-output"></div>
+            </div>
+
+            <!-- Panel B: Interactive Quiz Master -->
+            <div class="study-tab-panel" id="study-panel-quiz" style="display:none;">
+              <div class="glass-panel">
+                <form id="study-quiz-form">
+                  <div class="form-grid-2">
+                    <div class="form-group">
+                      <label>Quiz Topic</label>
+                      <input type="text" id="quiz-topic" class="form-control" placeholder="e.g. Photosynthesis, Newton's Laws, French Revolution" required>
+                    </div>
+                    <div class="form-group">
+                      <label>Subject</label>
+                      <input type="text" id="quiz-subject" class="form-control" placeholder="e.g. Biology, Physics, Mathematics, History">
+                    </div>
+                  </div>
+                  <div class="form-grid-3">
+                    <div class="form-group">
+                      <label>School Stage / Class</label>
+                      <select id="quiz-grade" class="form-control">
+                        <optgroup label="High School (Secondary)">
+                          <option value="Class 9 (High School)" selected>Class 9 (Grade 9)</option>
+                          <option value="Class 10 (High School / Board)">Class 10 (Grade 10 / Board)</option>
+                        </optgroup>
+                        <optgroup label="Higher Secondary (Senior High)">
+                          <option value="Class 11 (Senior High)">Class 11 (Grade 11)</option>
+                          <option value="Class 12 (Senior High / Board)">Class 12 (Grade 12 / Board)</option>
+                        </optgroup>
+                        <optgroup label="Middle School">
+                          <option value="Class 6 (Middle School)">Class 6 (Grade 6)</option>
+                          <option value="Class 7 (Middle School)">Class 7 (Grade 7)</option>
+                          <option value="Class 8 (Middle School)">Class 8 (Grade 8)</option>
+                        </optgroup>
+                        <optgroup label="Primary School">
+                          <option value="Class 1 to 5 (Primary)">Primary School (Classes 1 - 5)</option>
+                        </optgroup>
+                        <optgroup label="College & Competitive">
+                          <option value="College / Undergraduate">College / Undergraduate</option>
+                          <option value="Competitive Exam (NEET / JEE / SAT)">Competitive Exam Prep</option>
+                          <option value="General Learner">General Learner</option>
+                        </optgroup>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Difficulty</label>
+                      <select id="quiz-level" class="form-control">
+                        <option value="Beginner">Beginner (Foundation)</option>
+                        <option value="Intermediate" selected>Intermediate (Standard Exam)</option>
+                        <option value="Challenging">Challenging (Olympiad / Advanced)</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Number of Questions</label>
+                      <select id="quiz-num" class="form-control">
+                        <option value="3">3 Questions (Quick Sprint)</option>
+                        <option value="5" selected>5 Questions (Standard)</option>
+                        <option value="8">8 Questions (Deep Test)</option>
+                        <option value="10">10 Questions (Full Assessment)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn-action-primary" id="btn-quiz-submit">
+                    <span>Generate Interactive Quiz</span>
+                  </button>
+                </form>
+              </div>
+              <div id="quiz-output"></div>
+            </div>
+
+            <!-- Panel C: Timetable Builder -->
+            <div class="study-tab-panel" id="study-panel-timetable" style="display:none;">
+              <div class="glass-panel">
+                <form id="study-timetable-form">
+                  <div class="form-group">
+                    <label>Subjects & Topics to Cover</label>
+                    <input type="text" id="timetable-topic" class="form-control" placeholder="e.g. Linear Algebra, Operating Systems, Organic Chemistry" required>
+                  </div>
+                  <div class="form-grid-2">
+                    <div class="form-group">
+                      <label>Target Date / Deadline</label>
+                      <input type="date" id="timetable-date" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <label>Daily Study Capacity / Preferences</label>
+                      <input type="text" id="timetable-notes" class="form-control" placeholder="e.g. 3 hours per day, prefer evening sessions, Pomodoro technique">
+                    </div>
+                  </div>
+                  <button type="submit" class="btn-action-primary" id="btn-timetable-submit">
+                    <span>Build Study Timetable</span>
+                  </button>
+                </form>
+              </div>
+              <div id="timetable-output"></div>
+            </div>
+
+            <!-- Panel D: ELI5 Simple Explainer -->
+            <div class="study-tab-panel" id="study-panel-simple" style="display:none;">
+              <div class="glass-panel">
+                <form id="study-simple-form">
+                  <div class="form-group">
+                    <label>Difficult Concept to Simplify</label>
+                    <input type="text" id="simple-topic" class="form-control" placeholder="e.g. Blockchain, Black Holes, Neural Networks, Inflation" required>
+                  </div>
+                  <button type="submit" class="btn-action-primary" id="btn-simple-submit">
+                    <span>Explain in Simple Words</span>
+                  </button>
+                </form>
+              </div>
+              <div id="simple-output"></div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ------------------------------------------------------------------
+             VIEW 3: IDEA GENERATOR
+             ------------------------------------------------------------------ -->
+        <section class="view-pane" id="view-ideas">
+          <div class="feature-view-container">
+            <div class="feature-header-card">
+              <div class="feature-header-info">
+                <h2>Idea Generator</h2>
+                <p>Unlock visionary startup concepts, game mechanics, tech inventions, and creative projects.</p>
+              </div>
+              <span style="font-size:2.4rem;">💡</span>
+            </div>
+
+            <div class="glass-panel">
+              <div class="form-group">
+                <label>Select Category</label>
+                <div class="category-chips">
+                  <button type="button" class="cat-chip idea-cat-chip active" data-cat="Startup & Inventions">🚀 Startup & Inventions</button>
+                  <button type="button" class="cat-chip idea-cat-chip" data-cat="Game Development Projects">🎮 Game Dev Projects</button>
+                  <button type="button" class="cat-chip idea-cat-chip" data-cat="AI & Deep Tech">🤖 AI & Deep Tech</button>
+                  <button type="button" class="cat-chip idea-cat-chip" data-cat="Mobile & Web Apps">📱 Mobile & Web Apps</button>
+                  <button type="button" class="cat-chip idea-cat-chip" data-cat="Creative Content & Media">🎨 Creative Content & Media</button>
+                </div>
+              </div>
+
+              <form id="idea-generator-form">
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label>Theme / Keywords (Optional)</label>
+                    <input type="text" id="idea-topic" class="form-control" placeholder="e.g. Space exploration, Cyberpunk roguelike, Mental wellness">
+                  </div>
+                  <div class="form-group">
+                    <label>Target Audience</label>
+                    <input type="text" id="idea-audience" class="form-control" placeholder="e.g. Indie developers, Gen-Z creators, Enterprise teams">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Vibe / Innovation Profile</label>
+                  <select id="idea-vibe" class="form-control">
+                    <option value="Disruptive & High-Tech">Disruptive & High-Tech</option>
+                    <option value="Fun & Addictive">Fun & Addictive</option>
+                    <option value="Practical & High Revenue">Practical & High Revenue</option>
+                    <option value="Futuristic Moonshot">Futuristic Moonshot</option>
+                  </select>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <button type="submit" class="btn-action-primary" id="btn-ideas-submit">
+                    <span>Generate Innovative Ideas</span>
+                  </button>
+                  <button type="button" class="btn-msg-tool" id="btn-view-saved-ideas">
+                    ⭐ View Saved Ideas
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Saved Ideas Drawer -->
+            <div id="saved-ideas-drawer" style="display:none; margin-bottom:20px;">
+              <h3 style="color:var(--text-cyan); font-size:1.1rem; margin-bottom:12px;">Saved Ideas Library</h3>
+              <div id="saved-ideas-list"></div>
+            </div>
+
+            <!-- Generated Ideas Output -->
+            <div id="ideas-output"></div>
+
+          </div>
+        </section>
+
+        <!-- ------------------------------------------------------------------
+             VIEW 4: WRITING ASSISTANT
+             ------------------------------------------------------------------ -->
+        <section class="view-pane" id="view-writing">
+          <div class="feature-view-container">
+            <div class="feature-header-card">
+              <div class="feature-header-info">
+                <h2>Writing Assistant</h2>
+                <p>Craft persuasive essays, immersive stories, professional communications, and polish grammar.</p>
+              </div>
+              <span style="font-size:2.4rem;">✍️</span>
+            </div>
+
+            <div class="writing-layout">
+              <!-- Left: Controls & Input -->
+              <div class="glass-panel">
+                <form id="writing-form">
+                  <div class="form-group">
+                    <label>Writing Mode</label>
+                    <select id="writing-mode" class="form-control">
+                      <option value="essay">📄 Comprehensive Essay</option>
+                      <option value="story">📖 Creative Story</option>
+                      <option value="letter">✉️ Professional Email / Letter</option>
+                      <option value="grammar">✨ Grammar & Polish</option>
+                      <option value="rewrite">🔄 Rewrite & Tone Shifter</option>
+                    </select>
+                  </div>
+
+                  <div class="form-grid-2">
+                    <div class="form-group">
+                      <label>Tone</label>
+                      <select id="writing-tone" class="form-control">
+                        <option value="Academic & Rigorous">Academic & Rigorous</option>
+                        <option value="Professional & Executive" selected>Professional & Executive</option>
+                        <option value="Persuasive & Compelling">Persuasive & Compelling</option>
+                        <option value="Creative & Atmospheric">Creative & Atmospheric</option>
+                        <option value="Casual & Friendly">Casual & Friendly</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Length</label>
+                      <select id="writing-length" class="form-control">
+                        <option value="Concise">Concise (~200 words)</option>
+                        <option value="Standard" selected>Standard (~500 words)</option>
+                        <option value="Comprehensive">Comprehensive (~900 words)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label id="writing-prompt-label">Essay Topic / Thesis Question</label>
+                    <input type="text" id="writing-prompt" class="form-control" placeholder="e.g. The ethical implications of synthetic biology" required>
+                  </div>
+
+                  <div class="form-group" id="writing-text-group" style="display:none;">
+                    <label id="writing-text-label">Original Text to Polish or Rewrite</label>
+                    <textarea id="writing-input-text" class="form-control" rows="5" placeholder="Paste your draft text here..."></textarea>
+                    <div style="font-size:0.75rem; color:var(--text-muted); text-align:right; margin-top:4px;" id="writing-input-count">0 words • 0 chars</div>
+                  </div>
+
+                  <button type="submit" class="btn-action-primary" id="btn-writing-submit" style="width:100%;">
+                    <span>Generate Document</span>
+                  </button>
+                </form>
+              </div>
+
+              <!-- Right: Output & Export -->
+              <div class="glass-panel writing-output-box">
+                <div class="output-header">
+                  <div>
+                    <h3 style="font-size:1.1rem; color:var(--text-cyan);">AI Output</h3>
+                    <span class="word-count-badge" id="writing-output-count">0 words</span>
+                  </div>
+                  <div style="display:flex; gap:8px;">
+                    <button class="btn-msg-tool" id="btn-copy-writing">Copy</button>
+                    <button class="btn-msg-tool" id="btn-download-writing">Export .MD</button>
+                  </div>
+                </div>
+                <div class="output-content-area markdown-body" id="writing-output-content">
+                  <div style="color:var(--text-muted); padding:30px 10px; text-align:center;">
+                    Generated documents and polished drafts will appear here.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ------------------------------------------------------------------
+             VIEW 5: GOAL PLANNER
+             ------------------------------------------------------------------ -->
+        <section class="view-pane" id="view-goals">
+          <div class="feature-view-container">
+            <div class="feature-header-card">
+              <div class="feature-header-info">
+                <h2>Goal Planner</h2>
+                <p>Architect your ambitions, track dynamic milestone progress, and use AI to break down complex goals.</p>
+              </div>
+              <span style="font-size:2.4rem;">🎯</span>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="goal-stats-row">
+              <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-info">
+                  <h4 id="stat-total-goals">0</h4>
+                  <span>Total Goals</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-info">
+                  <h4 id="stat-active-goals">0</h4>
+                  <span>In Progress</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-info">
+                  <h4 id="stat-completed-goals">0</h4>
+                  <span>Completed</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Add Goal Card -->
+            <div class="glass-panel">
+              <h3 style="font-size:1.15rem; color:var(--text-cyan); margin-bottom:14px;">Add New Goal</h3>
+              <form id="new-goal-form">
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label>Goal Title</label>
+                    <input type="text" id="goal-title" class="form-control" placeholder="e.g. Launch my SaaS prototype in 60 days" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Category</label>
+                    <select id="goal-category" class="form-control">
+                      <option value="Career & Projects">Career & Projects</option>
+                      <option value="Learning & Skills">Learning & Skills</option>
+                      <option value="Health & Fitness">Health & Fitness</option>
+                      <option value="Financial Growth">Financial Growth</option>
+                      <option value="Personal Vision">Personal Vision</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label>Target Completion Date</label>
+                    <input type="date" id="goal-date" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label>Priority</label>
+                    <select id="goal-priority" class="form-control">
+                      <option value="High">High Priority</option>
+                      <option value="Medium" selected>Medium Priority</option>
+                      <option value="Low">Low Priority</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Description & Vision (Optional)</label>
+                  <textarea id="goal-desc" class="form-control" rows="2" placeholder="Brief context or motivation..."></textarea>
+                </div>
+
+                <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                  <button type="submit" class="btn-action-primary">
+                    <span>Create Goal</span>
+                  </button>
+                  <button type="button" class="btn-action-primary" id="btn-ai-goal-breakdown" style="background:linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);">
+                    <span>✨ AI Generate Action Steps</span>
+                  </button>
+                </div>
+
+                <div id="goal-ai-milestones-preview" style="display:none;"></div>
+              </form>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="tabs-bar">
+              <button class="tab-btn goal-filter-btn active" data-filter="all">All Goals</button>
+              <button class="tab-btn goal-filter-btn" data-filter="active">In Progress</button>
+              <button class="tab-btn goal-filter-btn" data-filter="completed">Completed</button>
+            </div>
+
+            <!-- Goals List -->
+            <div class="goals-list" id="goals-container-list">
+              <!-- Dynamically populated by goals.js -->
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ========================================================================
+       SETTINGS MODAL
+       ======================================================================== -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>System Settings</h3>
+        <button class="btn-close-modal btn-close-settings">✕</button>
+      </div>
+
+      <form id="settings-form">
+        <!-- API Key Section -->
+        <div class="form-group">
+          <label style="display:flex; justify-content:space-between; align-items:center;">
+            <span>Google Gemini API Key</span>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="font-size:0.75rem; color:var(--text-cyan); text-decoration:none;">
+              Get Free Gemini Key ↗
+            </a>
+          </label>
+          <input type="password" id="settings-api-key" class="form-control" placeholder="AIzaSy...">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+            <span style="font-size:0.75rem; color:var(--text-muted);">Stored securely in your local browser session or .env</span>
+            <button type="button" class="btn-msg-tool" id="btn-test-key">Test Key</button>
+          </div>
+          <div id="api-key-test-status" style="font-size:0.8rem; margin-top:4px;"></div>
+        </div>
+
+        <!-- Model Selection -->
+        <div class="form-group">
+          <label>Gemini Model</label>
+          <select id="settings-model" class="form-control">
+            <option value="gemini-3.5-flash-lite" selected>Gemini 3.5 Flash Lite (Fastest & Active)</option>
+            <option value="gemini-3.1-flash-lite">Gemini 3.1 Flash Lite (High Reliability)</option>
+          </select>
+        </div>
+
+        <!-- Temperature Slider -->
+        <div class="form-group">
+          <label style="display:flex; justify-content:space-between;">
+            <span>Creativity / Temperature</span>
+            <span id="temp-value-display" style="color:var(--text-cyan);">0.7</span>
+          </label>
+          <input type="range" id="settings-temperature" min="0" max="1" step="0.05" value="0.7" style="width:100%; accent-color:var(--cyan-primary);">
+        </div>
+
+        <!-- System Prompt -->
+        <div class="form-group">
+          <label>Custom AI Instructions (Optional)</label>
+          <textarea id="settings-system-prompt" class="form-control" rows="3" placeholder="e.g. Always respond with concise bullet points and provide code examples in TypeScript..."></textarea>
+        </div>
+
+        <!-- Theme Selection -->
+        <div class="form-group">
+          <label>Theme</label>
+          <select id="settings-theme" class="form-control">
+            <option value="dark">Cyber Dark Void (Navy & Black)</option>
+            <option value="light">Polar Ice Light</option>
+          </select>
+        </div>
+
+        <!-- SFX Toggle -->
+        <div class="form-group" style="flex-direction:row; justify-content:space-between; align-items:center;">
+          <label style="margin:0;">Futuristic Sound FX</label>
+          <input type="checkbox" id="settings-sfx-toggle" checked style="width:20px; height:20px; accent-color:var(--cyan-primary);">
+        </div>
+
+        <!-- Auto Voice Readout Toggle -->
+        <div class="form-group" style="flex-direction:row; justify-content:space-between; align-items:center;">
+          <label style="margin:0;">Voice Responses (Speak AI answers aloud)</label>
+          <input type="checkbox" id="settings-voice-toggle" style="width:20px; height:20px; accent-color:var(--cyan-primary);">
+        </div>
+
+        <!-- Voice Speech Speed Slider -->
+        <div class="form-group" style="margin-top:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <label style="margin:0;">Voice Speed</label>
+            <span id="voice-rate-display" style="font-size:0.85rem; color:var(--cyan-primary); font-family:monospace; font-weight:600;">1.08x (Natural)</span>
+          </div>
+          <input type="range" id="settings-voice-rate" min="0.8" max="1.8" step="0.02" value="1.08" style="width:100%; accent-color:var(--cyan-primary); cursor:pointer;">
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+            <span>0.8x (Slow)</span>
+            <span>1.0x (Normal)</span>
+            <span>1.08x (Natural & Crisp)</span>
+            <span>1.4x</span>
+            <span>1.8x</span>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:24px; padding-top:14px; border-top:1px solid var(--border-glass);">
+          <button type="button" class="btn-clear-history" id="btn-reset-storage" style="color:var(--rose-primary);">
+            Reset All Data
+          </button>
+          <div style="display:flex; gap:10px;">
+            <button type="button" class="btn-msg-tool btn-close-settings">Cancel</button>
+            <button type="submit" class="btn-action-primary" style="padding:10px 20px;">Save Settings</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ======================================================================
+       LIVE NEURAL VOICE CALL OVERLAY
+       ====================================================================== -->
+  <div class="voice-call-overlay" id="voice-call-overlay">
+    <div class="voice-call-backdrop"></div>
+    <div class="voice-call-hud">
+      
+      <!-- Top Status Bar -->
+      <div class="call-hud-header">
+        <div class="call-branding">
+          <div class="call-status-pulse" id="call-status-pulse"></div>
+          <span class="call-status-title" id="call-status-text">Connecting to Neural Voice Stream...</span>
+        </div>
+        <button class="call-close-btn" id="btn-call-end" title="End Voice Call">
+          ✕
+        </button>
+      </div>
+
+      <!-- Central Quantum Core Visualizer -->
+      <div class="call-core-wrapper">
+        <canvas id="call-core-canvas" width="200" height="200"></canvas>
+      </div>
+
+      <!-- Live Transcripts / Subtitles -->
+      <div class="call-transcript-panel">
+        <div class="call-bubble user-bubble">
+          <span class="call-bubble-label">You:</span>
+          <div class="call-transcript-text" id="call-user-transcript">Say something to LIFEGENIE...</div>
+        </div>
+
+        <div class="call-bubble ai-bubble">
+          <span class="call-bubble-label">LIFEGENIE:</span>
+          <div class="call-transcript-text" id="call-ai-subtitle">Listening... Speak naturally and I will respond with voice.</div>
+        </div>
+      </div>
+
+      <!-- Call Control Bar -->
+      <div class="call-controls-bar">
+        <!-- Mute Mic -->
+        <button class="btn-call-ctrl" id="btn-call-mute-mic" title="Mute / Unmute Microphone">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="23"></line>
+            <line x1="8" y1="23" x2="16" y2="23"></line>
+          </svg>
+          <span>Mic</span>
+        </button>
+
+        <!-- End Call Button -->
+        <button class="btn-call-ctrl btn-call-hangup" id="btn-call-hangup-main" title="End Voice Call" onclick="window.LIFEGENIE_VOICE && window.LIFEGENIE_VOICE.endVoiceCall()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+          <span>End Call</span>
+        </button>
+
+        <!-- Mute AI Voice -->
+        <button class="btn-call-ctrl" id="btn-call-mute-speaker" title="Mute / Unmute AI Speaker">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <span>Speaker</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/core-visualizer.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/study.js"></script>
+  <script src="js/ideas.js"></script>
+  <script src="js/writing.js"></script>
+  <script src="js/goals.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
+
