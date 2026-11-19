@@ -67,9 +67,32 @@ class ChatController {
     return this.conversations.find(c => c.id === this.currentChatId);
   }
 
+  updateActivity() {
+    try {
+      localStorage.setItem('lifegenie_last_active_time', Date.now().toString());
+    } catch (e) {}
+  }
+
   init() {
-    // If no conversation exists or current is missing, create new
-    if (!this.currentChatId || !this.getCurrentConversation()) {
+    // Detect returning user (closed tab/session or >10 minutes inactivity)
+    const sessionActive = sessionStorage.getItem('lifegenie_session_active');
+    const lastActiveTime = parseInt(localStorage.getItem('lifegenie_last_active_time') || '0', 10);
+    const timeElapsed = Date.now() - lastActiveTime;
+    const INACTIVITY_TIMEOUT = 10 * 60 * 1000; // 10 minutes
+
+    // Mark current session as active
+    sessionStorage.setItem('lifegenie_session_active', 'true');
+    this.updateActivity();
+
+    window.addEventListener('beforeunload', () => {
+      this.updateActivity();
+    });
+
+    // If user returns after closing tab or after inactivity, and previous chat had messages:
+    const activeConv = this.getCurrentConversation();
+    const shouldStartFresh = (!sessionActive || timeElapsed > INACTIVITY_TIMEOUT) && activeConv && activeConv.messages && activeConv.messages.length > 0;
+
+    if (shouldStartFresh || !this.currentChatId || !this.getCurrentConversation()) {
       this.createNewChat(false);
     }
 
@@ -129,6 +152,16 @@ class ChatController {
   }
 
   createNewChat(switchView = true) {
+    // If the top chat is already empty with 0 messages, simply reuse it
+    if (this.conversations.length > 0 && this.conversations[0].messages.length === 0) {
+      this.currentChatId = this.conversations[0].id;
+      this.saveConversations();
+      this.renderHistory();
+      this.renderCurrentChat();
+      if (switchView && window.app) window.app.switchView('assistant');
+      return;
+    }
+
     const newId = 'chat_' + Date.now();
     const newChat = {
       id: newId,
@@ -386,6 +419,8 @@ class ChatController {
       timestamp: new Date().toISOString()
     };
     conv.messages.push(userMsg);
+    this.saveConversations();
+    this.updateActivity();
 
     // Auto-update conversation title from first message
     if (conv.messages.length === 1) {
@@ -420,6 +455,7 @@ class ChatController {
 
       conv.messages.push(aiMsg);
       this.saveConversations();
+      this.updateActivity();
 
       // 1. Play immediate reply audio chime so the user gets instant audio feedback
       if (window.cyberAudio) {
