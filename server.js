@@ -27,6 +27,12 @@ app.get('/sw.js', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'sw.js'));
 });
 
+// Digital Asset Links for Android APK full-screen verification
+app.get('/.well-known/assetlinks.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.sendFile(path.join(__dirname, 'public', '.well-known', 'assetlinks.json'));
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Helper to get effective API key (header -> in-memory -> process.env)

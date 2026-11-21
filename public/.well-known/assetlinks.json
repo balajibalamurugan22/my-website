@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.onrender.life_genie_ai.twa",
+    "sha256_cert_fingerprints": ["9B:58:9C:F3:36:EC:89:A1:B4:16:62:51:FC:73:0B:6C:3C:DE:D7:23:C7:7B:91:FF:1D:7B:EB:E5:FA:C0:02:E7"]
+  }
+}]
