@@ -1,0 +1,18 @@
+{
+  "name": "LIFEGENIE – AI Assistant",
+  "short_name": "LIFEGENIE",
+  "description": "Futuristic Cyber AI Assistant powered by Google Gemini",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#060913",
+  "theme_color": "#00f0ff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/assets/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
