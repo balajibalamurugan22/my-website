@@ -13,6 +13,20 @@ let inMemoryApiKey = null;
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
+
+// PWA explicit endpoints
+app.get('/manifest.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.sendFile(path.join(__dirname, 'public', 'manifest.json'));
+});
+
+app.get('/sw.js', (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+  res.setHeader('Service-Worker-Allowed', '/');
+  res.sendFile(path.join(__dirname, 'public', 'sw.js'));
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Helper to get effective API key (header -> in-memory -> process.env)
